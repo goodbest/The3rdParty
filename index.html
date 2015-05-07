@@ -16,13 +16,43 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <script src="js/jquery.min.js"></script>
+  <script src="js/sha1.min.js"></script>
+  <script src="js/common.js"></script>
   <script>
-	  $(document).ready(function(){
-		  $.post('http://count.io/vb/the3rdparty/indexPV+');
-		  $.getJSON('http://count.io/vb/the3rdparty/indexPV/').done(function (data){
-			  $("#indexPV").append(' '+data['count']);
-	      });
+  $(document).ready(function(){
+      var now = Date.now();
+      var appKeyHash = sha1(appID+"UZ"+appKey+"UZ"+now)+"."+now
+      $.ajax({
+        "url": "https://d.apicloud.com/mcm/api/counts/doufunao",
+        "method": "POST",
+        "cache": false,
+        "headers": {
+          "X-APICloud-AppId": appID,
+          "X-APICloud-AppKey": appKeyHash
+        },
+        "data": {
+          "$inc": {
+            "3rdIndexPV": 1
+          },
+          "_method": "PUT"
+        }
       });
+        
+      $.ajax({
+        "url": "https://d.apicloud.com/mcm/api/counts/doufunao",
+        "method": "GET",
+        "cache": false,
+        "headers": {
+          "X-APICloud-AppId": appID,
+          "X-APICloud-AppKey": appKeyHash
+        }
+      }).success(function (cnt){
+		  //$("#tianBtni").append(' \<small\>现'+cnt['tian'] +'人次\</small\>');
+		  //$("#xianBtni").append(' \<small\>现'+cnt['xian'] +'人次\</small\>');
+		  $("#3rdIndexPV").append(' '+cnt['3rdIndexPV']);
+		  //$("#sitePV").append(' '+(cnt['indexPV']+cnt['tianPV']+cnt['xianPV']));
+      });
+  });
   </script>
 </head>
   
@@ -31,11 +61,12 @@
 		  <div class="jumbotron">
 		  <h2>独立、客观、公正</h2>
           <h1>第三方</h1>
+          <h4>豆腐脑党</h4>
 		  </div>
 		  
 		  <footer class="footer" align="center">
 		          <p>
-					  <span id="indexPV">页面访问量:</span>
+					  <span id="3rdIndexPV">页面访问量:</span>
 					    <br/>
 					  <span>制作: <a href="https://github.com/goodbest">goodbest</a></span>
 				  </p>
